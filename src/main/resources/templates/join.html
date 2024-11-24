@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+	<head>
+		<meta charset="UTF-8">
+		<title>Spring Security Session</title>
+	</head>
+	<body>
+		join page
+	    <hr>
+	    <form th:action="@{/joinProc}" method="post" name="joinForm">
+		    <input type="text" name="username" placeholder="Username"/>
+		    <input type="password" name="password" placeholder="Password"/>
+		    <input type="hidden" name="_csrf" th:value="#{_csrf.token}"/>
+			<input type="submit" value="Join"/>
+		</form>
+	</body>
+</html>
