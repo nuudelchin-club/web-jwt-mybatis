@@ -7,9 +7,9 @@ import lombok.Setter;
 @Entity
 @Setter
 @Getter
-public class UserEntity {
+public class RefreshEntity {
 
-    private String username;
-    private String password;
-    private String role;
+	private String username;
+    private String refresh;
+    private String expiration;
 }
