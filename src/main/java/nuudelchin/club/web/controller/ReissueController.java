@@ -15,18 +15,19 @@ import jakarta.servlet.http.HttpServletResponse;
 import nuudelchin.club.web.entity.RefreshEntity;
 import nuudelchin.club.web.jwt.JWTUtil;
 import nuudelchin.club.web.repository.RefreshRepository;
+import nuudelchin.club.web.service.RefreshService;
 
 @Controller
 @ResponseBody
 public class ReissueController {
 
     private final JWTUtil jwtUtil;
-    private final RefreshRepository refreshRepository;
+    private final RefreshService refreshService;
 
-    public ReissueController(JWTUtil jwtUtil, RefreshRepository refreshRepository) {
+    public ReissueController(JWTUtil jwtUtil, RefreshService refreshService) {
 
         this.jwtUtil = jwtUtil;
-        this.refreshRepository = refreshRepository;
+        this.refreshService = refreshService;
     }
 
     @PostMapping("/reissue")
@@ -35,6 +36,13 @@ public class ReissueController {
         //get refresh token
         String refreshToken = null;
         Cookie[] cookies = request.getCookies();
+        
+        if(cookies == null ) {
+        	
+        	//response status code
+        	return new ResponseEntity<>("refresh token null", HttpStatus.BAD_REQUEST);
+        }
+        
         for (Cookie cookie : cookies) {
 
             if (cookie.getName().equals("refresh")) {
@@ -70,7 +78,7 @@ public class ReissueController {
         }
         
         //DB에 저장되어 있는지 확인
-    	RefreshEntity refreshEntity = refreshRepository.findByRefresh(refreshToken);
+    	RefreshEntity refreshEntity = refreshService.findByRefresh(refreshToken);
     	if (refreshEntity == null) {
     		
     		//response body
@@ -85,14 +93,14 @@ public class ReissueController {
         String newRefreshToken = jwtUtil.createJwt("refresh", username, role, 600000L /*86400000L*/);
         
         //Refresh 토큰 저장 DB에 기존의 Refresh 토큰 삭제 후 새 Refresh 토큰 저장
-    	refreshRepository.delete(refreshToken);
+        refreshService.delete(refreshToken);
     	
     	refreshEntity = new RefreshEntity();
         refreshEntity.setUsername(username);
         refreshEntity.setRefresh(newRefreshToken);
         refreshEntity.setExpiration(new Date(System.currentTimeMillis() + 600000L /*86400000L*/).toString());
         
-        refreshRepository.save(refreshEntity);
+        refreshService.save(refreshEntity);
 
         //response
         response.setHeader("access", newAccessToken);

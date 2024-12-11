@@ -1,16 +1,22 @@
 package nuudelchin.club.web.jwt;
 
+import java.io.IOException;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.Map;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.Cookie;
@@ -36,12 +42,25 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 	@Override
 	public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
 		
-		String username = obtainUsername(request);
-		String password = obtainPassword(request);
+		if (request.getContentType() != null && request.getContentType().contains(MediaType.APPLICATION_JSON_VALUE)) {
+	        try {
+	            
+	            ObjectMapper objectMapper = new ObjectMapper();
+	            Map<String, String> credentials = objectMapper.readValue(request.getInputStream(), Map.class);
+
+	            String username = credentials.get("username");
+	            String password = credentials.get("password");
+
+	            UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(username, password, null);
+
+	            return authenticationManager.authenticate(authToken);
+	            
+	        } catch (IOException e) {
+	            throw new AuthenticationServiceException("Error reading JSON request", e);
+	        }
+	    }
 		
-		UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(username, password, null); 
-		
-		return authenticationManager.authenticate(authToken);
+		throw new AuthenticationServiceException("Invalid content type: Expected application/json");
 	}
 	
 	@Override
@@ -69,6 +88,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         response.setHeader("access", access);
         response.addCookie(createCookie("refresh", refresh));
         response.setStatus(HttpStatus.OK.value());
+        //response.sendRedirect("http://localhost:3000/");
     }
 
 		//로그인 실패시 실행하는 메소드
@@ -84,7 +104,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         Cookie cookie = new Cookie(key, value);
         cookie.setMaxAge(24*60*60);	// 24 hours
         //cookie.setSecure(true);	// use case is https
-        //cookie.setPath("/");
+        cookie.setPath("/");		// Бүх эндпойнт дээр илгээгдэх
         cookie.setHttpOnly(true);	// cannot use cookie in java script
 
         return cookie;

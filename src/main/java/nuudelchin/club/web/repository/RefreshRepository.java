@@ -12,4 +12,6 @@ public interface RefreshRepository {
 	int save(RefreshEntity entity);
 	
 	int delete(String refresh);
+	
+	int deleteExpiredRefreshTokens(String expiration);
 }

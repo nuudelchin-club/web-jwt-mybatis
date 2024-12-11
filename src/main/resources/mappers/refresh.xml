@@ -15,4 +15,8 @@
     	DELETE FROM m_refresh WHERE refresh = #{refresh};
     </delete>
     
+    <delete id="deleteExpiredRefreshTokens" parameterType="String">
+    	DELETE FROM m_refresh WHERE expiration &lt; #{expiration};
+    </delete>
+    
 </mapper>
