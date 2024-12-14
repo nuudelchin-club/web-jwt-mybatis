@@ -35,7 +35,7 @@ public class RefreshService {
     	
     	String expiration = new Date(System.currentTimeMillis()).toString();
     	
-    	System.out.println("time: " + expiration);
+    	System.out.println("DB refresh check time: " + expiration);
     	
     	refreshRepository.deleteExpiredRefreshTokens(expiration);
     	

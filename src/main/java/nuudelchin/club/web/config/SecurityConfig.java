@@ -81,13 +81,12 @@ public class SecurityConfig {
 		http.httpBasic((auth) -> auth.disable());
 		
 		http.authorizeHttpRequests((auth) -> auth
-				.requestMatchers("/login", "/", "join").permitAll()
-				.requestMatchers("/reissue").permitAll()
+				.requestMatchers("/login", "/", "join", "/reissue").permitAll()
 				.anyRequest().authenticated());
 		
-		http.addFilterBefore(new JWTFilter(jwtUtil), LoginFilter.class);
-		
 		http.addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil, refreshRepository), UsernamePasswordAuthenticationFilter.class);
+		
+		http.addFilterAfter(new JWTFilter(jwtUtil), LoginFilter.class);
 		
 		http.addFilterBefore(new CustomLogoutFilter(jwtUtil, refreshRepository), LogoutFilter.class);
 		
