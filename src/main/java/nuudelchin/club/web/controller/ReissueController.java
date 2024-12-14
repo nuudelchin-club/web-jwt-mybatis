@@ -2,6 +2,7 @@ package nuudelchin.club.web.controller;
 
 import java.util.Date;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -14,8 +15,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import nuudelchin.club.web.entity.RefreshEntity;
 import nuudelchin.club.web.jwt.JWTUtil;
-import nuudelchin.club.web.repository.RefreshRepository;
 import nuudelchin.club.web.service.RefreshService;
+import nuudelchin.club.web.service.SecretService;
 
 @Controller
 @ResponseBody
@@ -23,11 +24,16 @@ public class ReissueController {
 
     private final JWTUtil jwtUtil;
     private final RefreshService refreshService;
+    private final SecretService secretService;
 
-    public ReissueController(JWTUtil jwtUtil, RefreshService refreshService) {
+    public ReissueController(
+    		JWTUtil jwtUtil, 
+    		RefreshService refreshService,
+    		SecretService secretService) {
 
         this.jwtUtil = jwtUtil;
         this.refreshService = refreshService;
+        this.secretService = secretService;
     }
 
     @PostMapping("/reissue")
@@ -91,8 +97,8 @@ public class ReissueController {
         String role = jwtUtil.getRole(refreshToken);
 
         //make new JWT
-        String newAccessToken = jwtUtil.createJwt("access", username, role, 60000L /*600000L*/);
-        String newRefreshToken = jwtUtil.createJwt("refresh", username, role, 600000L /*86400000L*/);
+        String newAccessToken = jwtUtil.createJwt("access", username, role, secretService.getJwtAccess());
+        String newRefreshToken = jwtUtil.createJwt("refresh", username, role, secretService.getJwtRefresh());
         
         //Refresh 토큰 저장 DB에 기존의 Refresh 토큰 삭제 후 새 Refresh 토큰 저장
         refreshService.delete(refreshToken);
@@ -100,7 +106,7 @@ public class ReissueController {
     	refreshEntity = new RefreshEntity();
         refreshEntity.setUsername(username);
         refreshEntity.setRefresh(newRefreshToken);
-        refreshEntity.setExpiration(new Date(System.currentTimeMillis() + 600000L /*86400000L*/).toString());
+        refreshEntity.setExpiration(new Date(System.currentTimeMillis() + secretService.getJwtRefresh()).toString());
         
         refreshService.save(refreshEntity);
 
@@ -114,7 +120,7 @@ public class ReissueController {
     private Cookie createCookie(String key, String value) {
 
         Cookie cookie = new Cookie(key, value);
-        cookie.setMaxAge(24*60*60);
+        cookie.setMaxAge(secretService.getJwtRefreshCookie());
         //cookie.setSecure(true);
         //cookie.setPath("/");
         cookie.setHttpOnly(true);

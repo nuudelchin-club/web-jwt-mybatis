@@ -25,18 +25,25 @@ import jakarta.servlet.http.HttpServletResponse;
 import nuudelchin.club.web.dto.CustomUserDetails;
 import nuudelchin.club.web.entity.RefreshEntity;
 import nuudelchin.club.web.repository.RefreshRepository;
+import nuudelchin.club.web.service.SecretService;
 
 public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 	
 	private final AuthenticationManager authenticationManager;
 	private final JWTUtil jwtUtil;
 	private final RefreshRepository refreshRepository;
+	private final SecretService secretService;
 	
-	public LoginFilter(AuthenticationManager authenticationManager, JWTUtil jwtUtil, RefreshRepository refreshRepository) {
+	public LoginFilter(
+			AuthenticationManager authenticationManager, 
+			JWTUtil jwtUtil, 
+			RefreshRepository refreshRepository,
+			SecretService secretService) {
 		
 		this.authenticationManager = authenticationManager;
 		this.jwtUtil = jwtUtil;
 		this.refreshRepository = refreshRepository;
+		this.secretService = secretService;
 	}
 	
 	@Override
@@ -76,13 +83,13 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
         String role = auth.getAuthority();
 
-        String access = jwtUtil.createJwt("access", username, role, 60000L /*600000L*/);	// 10 minutes
-        String refresh = jwtUtil.createJwt("refresh", username, role, 600000L /*86400000L*/);	// 24 hours
+        String access = jwtUtil.createJwt("access", username, role, secretService.getJwtAccess());
+        String refresh = jwtUtil.createJwt("refresh", username, role, secretService.getJwtRefresh());
         
         RefreshEntity refreshEntity = new RefreshEntity();
         refreshEntity.setUsername(username);
         refreshEntity.setRefresh(refresh);
-        refreshEntity.setExpiration(new Date(System.currentTimeMillis() + 600000L /*86400000L*/).toString());
+        refreshEntity.setExpiration(new Date(System.currentTimeMillis() + secretService.getJwtRefresh()).toString());
         refreshRepository.save(refreshEntity);
         
         response.setHeader("access", access);
@@ -102,7 +109,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     private Cookie createCookie(String key, String value) {
 
         Cookie cookie = new Cookie(key, value);
-        cookie.setMaxAge(24*60*60);	// 24 hours
+        cookie.setMaxAge(secretService.getJwtRefreshCookie());	// 24 hours
         //cookie.setSecure(true);	// use case is https
         cookie.setPath("/");		// Бүх эндпойнт дээр илгээгдэх
         cookie.setHttpOnly(true);	// cannot use cookie in java script

@@ -22,6 +22,7 @@ import nuudelchin.club.web.jwt.JWTFilter;
 import nuudelchin.club.web.jwt.JWTUtil;
 import nuudelchin.club.web.jwt.LoginFilter;
 import nuudelchin.club.web.repository.RefreshRepository;
+import nuudelchin.club.web.service.SecretService;
 
 @Configuration
 @EnableWebSecurity
@@ -30,12 +31,18 @@ public class SecurityConfig {
 	private final AuthenticationConfiguration authenticationConfiguration;
 	private final JWTUtil jwtUtil;
 	private final RefreshRepository refreshRepository;
+	private final SecretService secretService;
 
-    public SecurityConfig(AuthenticationConfiguration authenticationConfiguration, JWTUtil jwtUtil, RefreshRepository refreshRepository) {
+    public SecurityConfig(
+    		AuthenticationConfiguration authenticationConfiguration, 
+    		JWTUtil jwtUtil, 
+    		RefreshRepository refreshRepository,
+    		SecretService secretService) {
 
         this.authenticationConfiguration = authenticationConfiguration;
         this.jwtUtil = jwtUtil;
         this.refreshRepository = refreshRepository;
+        this.secretService = secretService;
     }
 	
 	@Bean
@@ -84,7 +91,11 @@ public class SecurityConfig {
 				.requestMatchers("/login", "/", "join", "/reissue").permitAll()
 				.anyRequest().authenticated());
 		
-		http.addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil, refreshRepository), UsernamePasswordAuthenticationFilter.class);
+		http.addFilterAt(new LoginFilter(
+				authenticationManager(authenticationConfiguration), 
+				jwtUtil, 
+				refreshRepository,
+				secretService), UsernamePasswordAuthenticationFilter.class);
 		
 		http.addFilterAfter(new JWTFilter(jwtUtil), LoginFilter.class);
 		
