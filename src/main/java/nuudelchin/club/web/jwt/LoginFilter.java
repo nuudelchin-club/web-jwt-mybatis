@@ -49,6 +49,8 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 	@Override
 	public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
 		
+		System.out.println("attemptAuthentication");
+		
 		if (request.getContentType() != null && request.getContentType().contains(MediaType.APPLICATION_JSON_VALUE)) {
 	        try {
 	            
@@ -94,6 +96,9 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         
         response.setHeader("access", access);
         response.addCookie(createCookie("refresh", refresh));
+        
+        System.out.println("access and refresh tokens are created");
+        
         response.setStatus(HttpStatus.OK.value());
         //response.sendRedirect("http://localhost:3000/");
     }

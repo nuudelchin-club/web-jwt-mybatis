@@ -1,6 +1,7 @@
 package nuudelchin.club.web.config;
 
 import java.util.Collections;
+import java.util.List;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -74,8 +75,9 @@ public class SecurityConfig {
 				configuration.setAllowedHeaders(Collections.singletonList("*"));
 				configuration.setMaxAge(3600L);
 				
-				configuration.setExposedHeaders(Collections.singletonList("Set-Cookie"));
-				configuration.setExposedHeaders(Collections.singletonList("access"));
+//				configuration.setExposedHeaders(Collections.singletonList("Set-Cookie"));
+//				configuration.setExposedHeaders(Collections.singletonList("access"));
+				configuration.setExposedHeaders(List.of("Set-Cookie", "access"));		
 				
 				return configuration;
 			}
@@ -88,7 +90,7 @@ public class SecurityConfig {
 		http.httpBasic((auth) -> auth.disable());
 		
 		http.authorizeHttpRequests((auth) -> auth
-				.requestMatchers("/login", "/", "join", "/reissue").permitAll()
+				.requestMatchers("/login", "/", "join", "/reissue", "/authentication").permitAll()
 				.anyRequest().authenticated());
 		
 		http.addFilterAt(new LoginFilter(

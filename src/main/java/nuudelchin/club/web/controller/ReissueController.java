@@ -60,6 +60,8 @@ public class ReissueController {
         }
 
         if (refreshToken == null) {
+        	
+        	System.out.println("refresh token is null");
 
             //response status code
             return new ResponseEntity<>("refresh token null", HttpStatus.BAD_REQUEST);
@@ -113,6 +115,8 @@ public class ReissueController {
         //response
         response.setHeader("access", newAccessToken);
         response.addCookie(createCookie("refresh", newRefreshToken));
+        
+        System.out.println("access and refresh tokens are reissued");
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
