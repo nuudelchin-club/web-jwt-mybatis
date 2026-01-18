@@ -7,6 +7,7 @@ import nuudelchin.club.web.jwt.JwtUtil;
 import nuudelchin.club.web.jwt.MyLoginFilter;
 import nuudelchin.club.web.service.TokenService;
 import nuudelchin.club.web.service.SecretService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -27,6 +28,9 @@ import java.util.List;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
+
+	@Value("${app.url}")
+	private String appUrl;
 	
 	private final AuthenticationConfiguration authenticationConfiguration;
 	private final JwtUtil jwtUtil;
@@ -68,7 +72,7 @@ public class SecurityConfig {
 			
 				CorsConfiguration configuration = new CorsConfiguration();
 				
-				configuration.setAllowedOrigins(Collections.singletonList("http://localhost:3000"));
+				configuration.setAllowedOrigins(Collections.singletonList(appUrl));
 				configuration.setAllowedMethods(Collections.singletonList("*"));
 				configuration.setAllowCredentials(true);
 				configuration.setAllowedHeaders(Collections.singletonList("*"));
