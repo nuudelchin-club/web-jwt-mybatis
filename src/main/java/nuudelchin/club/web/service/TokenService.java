@@ -29,13 +29,9 @@ public class TokenService {
 	
 	@Scheduled(fixedRate = 60000)
 	public void deleteExpiredTokens() {
-    	
-    	Instant expiration = Instant.now();
-    	
-    	System.out.println("DB refresh check time: " + expiration);
-    	
-    	tokenRepository.deleteExpiredTokens(expiration);
-    	
+//    	Instant expiration = Instant.now();
+//    	System.out.println("DB refresh check time: " + expiration);
+//    	tokenRepository.deleteExpiredTokens(expiration);
     }
 
 	public int deleteByToken(String token) {
