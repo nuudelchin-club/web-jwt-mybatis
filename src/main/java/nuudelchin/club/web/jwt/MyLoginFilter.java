@@ -103,7 +103,7 @@ public class MyLoginFilter extends UsernamePasswordAuthenticationFilter {
 		tokenEntity.setUsername(username);
 		tokenEntity.setToken(newRefreshToken);
 		tokenEntity.setExpiration(Instant.now().plusMillis(secretService.getJwtRefresh()));
-		tokenService.save(tokenEntity);
+		tokenService.insert(tokenEntity);
 
 		response.setHeader("Authorization", "Bearer " + newAccessToken);
 

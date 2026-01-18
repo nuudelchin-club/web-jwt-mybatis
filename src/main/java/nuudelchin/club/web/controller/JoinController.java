@@ -1,8 +1,10 @@
 package nuudelchin.club.web.controller;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.http.ResponseEntity;
 
 import nuudelchin.club.web.dto.JoinDTO;
 import nuudelchin.club.web.service.JoinService;
@@ -17,12 +19,14 @@ public class JoinController {
 		
 		this.joinService = joinService;
 	}
-	
+
 	@PostMapping("/join")
-	public String joinProc(JoinDTO dto) {
-		
-		this.joinService.joinProc(dto);
-		
-		return "Okay";
+	public ResponseEntity<?> join(JoinDTO dto) {
+		try {
+			joinService.join(dto);
+			return new ResponseEntity<>(HttpStatus.OK);
+		} catch (IllegalStateException e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
 	}
 }

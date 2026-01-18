@@ -30,7 +30,7 @@ public class UserController {
 		
 		String username = authentication.getName();
 		
-		UserEntity userEntity = userService.findByUsername(username);
+		UserEntity userEntity = userService.selectByUsername(username);
 		
 		Map<String, Object> result = new HashMap<String, Object>(); 
 		

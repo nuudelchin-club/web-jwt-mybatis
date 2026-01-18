@@ -1,9 +1,8 @@
 package nuudelchin.club.web.service;
 
-import org.springframework.stereotype.Service;
-
 import nuudelchin.club.web.entity.UserEntity;
 import nuudelchin.club.web.repository.UserRepository;
+import org.springframework.stereotype.Service;
 
 @Service
 public class UserService {
@@ -15,8 +14,17 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-	public UserEntity findByUsername(String username) {
+	public UserEntity selectByUsername(String username) {
 	
-		return userRepository.findByUsername(username);
+		return userRepository.selectByUsername(username);
 	}
+
+	public int insert(UserEntity entity) {
+		return userRepository.insert(entity);
+	}
+
+	public boolean existsByUsername(String username) {
+		return userRepository.existsByUsername(username) > 0;
+	}
+
 }

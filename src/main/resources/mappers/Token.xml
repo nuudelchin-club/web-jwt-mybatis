@@ -6,7 +6,7 @@
         SELECT * FROM mstr_token WHERE token = #{token};
     </select>
     
-    <insert id="save" parameterType="nuudelchin.club.web.entity.TokenEntity">
+    <insert id="insert" parameterType="nuudelchin.club.web.entity.TokenEntity">
     	INSERT INTO mstr_token (username, token, expiration)
 			VALUES (#{username}, #{token}, #{expiration});
     </insert>

@@ -18,15 +18,15 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/token")
-public class ReissueTokenController {
+public class TokenController {
 
-    private static final Logger log = LoggerFactory.getLogger(ReissueTokenController.class);
+    private static final Logger log = LoggerFactory.getLogger(TokenController.class);
 
     private final JwtUtil jwtUtil;
     private final TokenService tokenService;
     private final SecretService secretService;
 
-    public ReissueTokenController(
+    public TokenController(
     		JwtUtil jwtUtil,
     		TokenService tokenService,
     		SecretService secretService) {
@@ -36,8 +36,8 @@ public class ReissueTokenController {
         this.secretService = secretService;
     }
 
-    @PostMapping("/reissue")
-    public ResponseEntity<?> reissue(HttpServletRequest request, HttpServletResponse response) {
+    @PostMapping("/renew")
+    public ResponseEntity<?> renew(HttpServletRequest request, HttpServletResponse response) {
 
         Cookie[] cookies = request.getCookies();
         if(cookies == null) {

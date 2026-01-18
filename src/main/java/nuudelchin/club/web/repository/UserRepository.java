@@ -7,7 +7,9 @@ import nuudelchin.club.web.entity.UserEntity;
 @Mapper
 public interface UserRepository {
 	
-	UserEntity findByUsername(String username);
+	UserEntity selectByUsername(String username);
 	
-	int save(UserEntity entity);
+	int insert(UserEntity entity);
+
+	int existsByUsername(String username);
 }

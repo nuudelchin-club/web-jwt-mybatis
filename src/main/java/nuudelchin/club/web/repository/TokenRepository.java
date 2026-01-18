@@ -11,7 +11,7 @@ public interface TokenRepository {
 	
 	TokenEntity selectByToken(String token);
 	
-	int save(TokenEntity entity);
+	int insert(TokenEntity entity);
 	
 	int deleteExpiredTokens(Instant expiration);
 

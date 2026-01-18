@@ -23,8 +23,8 @@ public class TokenService {
 		return tokenRepository.selectByToken(token);
 	}
 	
-	public int save(TokenEntity entity) {
-		return tokenRepository.save(entity);
+	public int insert(TokenEntity entity) {
+		return tokenRepository.insert(entity);
 	}
 	
 	@Scheduled(fixedRate = 60000)
