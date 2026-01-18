@@ -3,11 +3,13 @@ package nuudelchin.club.web.entity;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.Instant;
+
 @Setter
 @Getter
-public class RefreshEntity {
+public class TokenEntity {
 
 	private String username;
-    private String refresh;
-    private String expiration;
+    private String token;
+    private Instant expiration;
 }

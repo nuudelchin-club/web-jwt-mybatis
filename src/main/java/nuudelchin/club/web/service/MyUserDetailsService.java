@@ -10,11 +10,11 @@ import nuudelchin.club.web.entity.UserEntity;
 import nuudelchin.club.web.repository.UserRepository;
 
 @Service
-public class CustomUserDetailsService implements UserDetailsService{
+public class MyUserDetailsService implements UserDetailsService{
 	
 	private final UserRepository userRepository;
 	
-	public CustomUserDetailsService(UserRepository userRepository) {
+	public MyUserDetailsService(UserRepository userRepository) {
 
         this.userRepository = userRepository;
     }

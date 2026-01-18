@@ -1,22 +1,21 @@
 package nuudelchin.club.web.jwt;
 
-import java.nio.charset.StandardCharsets;
-import java.util.Date;
-
-import javax.crypto.SecretKey;
-import javax.crypto.spec.SecretKeySpec;
-
+import io.jsonwebtoken.Jwts;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import io.jsonwebtoken.Jwts;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
+import java.nio.charset.StandardCharsets;
+import java.time.Instant;
+import java.util.Date;
 
 @Component
-public class JWTUtil {
+public class JwtUtil {
 
     private SecretKey secretKey;
 
-    public JWTUtil(@Value("${jwt.secret}")String secret) {
+    public JwtUtil(@Value("${jwt.secret}")String secret) {
 
         secretKey = new SecretKeySpec(secret.getBytes(StandardCharsets.UTF_8), Jwts.SIG.HS256.key().build().getAlgorithm());
     }
@@ -58,7 +57,7 @@ public class JWTUtil {
 				.parseSignedClaims(token)
 				.getPayload()
 				.getExpiration()
-				.before(new Date(System.currentTimeMillis()));
+				.before(Date.from(Instant.now()));
     }
 
     public String createJwt(String category, String username, String role, Long expiredMs) {
@@ -67,8 +66,8 @@ public class JWTUtil {
         		.claim("category", category)
         		.claim("username", username)
                 .claim("role", role)
-                .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis() + expiredMs))
+                .issuedAt(Date.from(Instant.now()))
+                .expiration(Date.from(Instant.now().plusMillis(expiredMs)))
                 .signWith(secretKey)
                 .compact();
     }

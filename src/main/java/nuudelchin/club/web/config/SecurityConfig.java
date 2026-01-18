@@ -1,8 +1,12 @@
 package nuudelchin.club.web.config;
 
-import java.util.Collections;
-import java.util.List;
-
+import jakarta.servlet.http.HttpServletRequest;
+import nuudelchin.club.web.jwt.MyLogoutFilter;
+import nuudelchin.club.web.jwt.MyJwtFilter;
+import nuudelchin.club.web.jwt.JwtUtil;
+import nuudelchin.club.web.jwt.MyLoginFilter;
+import nuudelchin.club.web.service.TokenService;
+import nuudelchin.club.web.service.SecretService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -17,32 +21,27 @@ import org.springframework.security.web.authentication.logout.LogoutFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 
-import jakarta.servlet.http.HttpServletRequest;
-import nuudelchin.club.web.jwt.CustomLogoutFilter;
-import nuudelchin.club.web.jwt.JWTFilter;
-import nuudelchin.club.web.jwt.JWTUtil;
-import nuudelchin.club.web.jwt.LoginFilter;
-import nuudelchin.club.web.repository.RefreshRepository;
-import nuudelchin.club.web.service.SecretService;
+import java.util.Collections;
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 	
 	private final AuthenticationConfiguration authenticationConfiguration;
-	private final JWTUtil jwtUtil;
-	private final RefreshRepository refreshRepository;
+	private final JwtUtil jwtUtil;
+	private final TokenService tokenService;
 	private final SecretService secretService;
 
     public SecurityConfig(
     		AuthenticationConfiguration authenticationConfiguration, 
-    		JWTUtil jwtUtil, 
-    		RefreshRepository refreshRepository,
+    		JwtUtil jwtUtil,
+    		TokenService tokenService,
     		SecretService secretService) {
 
         this.authenticationConfiguration = authenticationConfiguration;
         this.jwtUtil = jwtUtil;
-        this.refreshRepository = refreshRepository;
+        this.tokenService = tokenService;
         this.secretService = secretService;
     }
 	
@@ -77,7 +76,7 @@ public class SecurityConfig {
 				
 //				configuration.setExposedHeaders(Collections.singletonList("Set-Cookie"));
 //				configuration.setExposedHeaders(Collections.singletonList("access"));
-				configuration.setExposedHeaders(List.of("Set-Cookie", "access"));		
+				configuration.setExposedHeaders(List.of("Set-Cookie", "Authorization"));
 				
 				return configuration;
 			}
@@ -90,18 +89,18 @@ public class SecurityConfig {
 		http.httpBasic((auth) -> auth.disable());
 		
 		http.authorizeHttpRequests((auth) -> auth
-				.requestMatchers("/login", "/", "join", "/reissue", "/authentication").permitAll()
+				.requestMatchers("/login", "/", "join", "/token/reissue").permitAll()
 				.anyRequest().authenticated());
 		
-		http.addFilterAt(new LoginFilter(
+		http.addFilterAt(new MyLoginFilter(
 				authenticationManager(authenticationConfiguration), 
 				jwtUtil, 
-				refreshRepository,
+				tokenService,
 				secretService), UsernamePasswordAuthenticationFilter.class);
 		
-		http.addFilterAfter(new JWTFilter(jwtUtil), LoginFilter.class);
+		http.addFilterAfter(new MyJwtFilter(jwtUtil), MyLoginFilter.class);
 		
-		http.addFilterBefore(new CustomLogoutFilter(jwtUtil, refreshRepository), LogoutFilter.class);
+		http.addFilterBefore(new MyLogoutFilter(jwtUtil, tokenService), LogoutFilter.class);
 		
 		http.sessionManagement((session) -> session
 				.sessionCreationPolicy(SessionCreationPolicy.STATELESS));

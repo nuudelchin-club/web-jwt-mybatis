@@ -3,11 +3,11 @@
 <mapper namespace="nuudelchin.club.web.repository.UserRepository">
 
 	<select id="findByUsername" resultType="nuudelchin.club.web.entity.UserEntity" parameterType="String">
-        SELECT * FROM m_user WHERE username = #{username};
+        SELECT * FROM mstr_user WHERE username = #{username};
     </select>
     
     <insert id="save" parameterType="nuudelchin.club.web.entity.UserEntity">
-    	INSERT INTO m_user (username, password, role)
+    	INSERT INTO mstr_user (username, password, role)
 			VALUES (#{username}, #{password}, #{role});
     </insert>
     
