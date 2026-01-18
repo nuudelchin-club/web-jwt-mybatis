@@ -13,7 +13,7 @@
 
     <select id="existsByUsername" resultType="int">
         SELECT COUNT(1)
-        FROM users
+        FROM mstr_user
         WHERE username = #{username}
     </select>
     
