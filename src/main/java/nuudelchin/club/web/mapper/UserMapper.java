@@ -1,11 +1,11 @@
-package nuudelchin.club.web.repository;
+package nuudelchin.club.web.mapper;
 
 import org.apache.ibatis.annotations.Mapper;
 
 import nuudelchin.club.web.entity.UserEntity;
 
 @Mapper
-public interface UserRepository {
+public interface UserMapper {
 	
 	UserEntity selectByUsername(String username);
 	

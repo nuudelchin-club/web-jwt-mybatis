@@ -1,15 +1,15 @@
 package nuudelchin.club.web.service;
 
 import nuudelchin.club.web.entity.UserEntity;
-import nuudelchin.club.web.repository.UserRepository;
+import nuudelchin.club.web.mapper.UserMapper;
 import org.springframework.stereotype.Service;
 
 @Service
 public class UserService {
 	
-	private final UserRepository userRepository;
+	private final UserMapper userRepository;
 
-    public UserService(UserRepository userRepository) {
+    public UserService(UserMapper userRepository) {
 
         this.userRepository = userRepository;
     }

@@ -1,4 +1,4 @@
-package nuudelchin.club.web.repository;
+package nuudelchin.club.web.mapper;
 
 import org.apache.ibatis.annotations.Mapper;
 
@@ -7,7 +7,7 @@ import nuudelchin.club.web.entity.TokenEntity;
 import java.time.Instant;
 
 @Mapper
-public interface TokenRepository {
+public interface TokenMapper {
 	
 	TokenEntity selectByToken(String token);
 	

@@ -7,14 +7,14 @@ import org.springframework.stereotype.Service;
 
 import nuudelchin.club.web.dto.MyUserDetails;
 import nuudelchin.club.web.entity.UserEntity;
-import nuudelchin.club.web.repository.UserRepository;
+import nuudelchin.club.web.mapper.UserMapper;
 
 @Service
 public class MyUserDetailsService implements UserDetailsService{
 	
-	private final UserRepository userRepository;
+	private final UserMapper userRepository;
 	
-	public MyUserDetailsService(UserRepository userRepository) {
+	public MyUserDetailsService(UserMapper userRepository) {
 
         this.userRepository = userRepository;
     }

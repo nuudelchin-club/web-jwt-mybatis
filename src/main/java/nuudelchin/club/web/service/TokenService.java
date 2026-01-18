@@ -1,20 +1,17 @@
 package nuudelchin.club.web.service;
 
-import java.time.Instant;
-import java.util.Date;
-
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import nuudelchin.club.web.entity.TokenEntity;
-import nuudelchin.club.web.repository.TokenRepository;
+import nuudelchin.club.web.mapper.TokenMapper;
 
 @Service
 public class TokenService {
 
-	private final TokenRepository tokenRepository;
+	private final TokenMapper tokenRepository;
 	
-	public TokenService(TokenRepository tokenRepository) {
+	public TokenService(TokenMapper tokenRepository) {
 
         this.tokenRepository = tokenRepository;
     }
