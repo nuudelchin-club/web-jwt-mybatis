@@ -5,7 +5,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import nuudelchin.club.web.dto.CustomUserDetails;
+import nuudelchin.club.web.dto.MyUserDetails;
 import nuudelchin.club.web.entity.TokenEntity;
 import nuudelchin.club.web.service.SecretService;
 import nuudelchin.club.web.service.TokenService;
@@ -84,7 +84,7 @@ public class MyLoginFilter extends UsernamePasswordAuthenticationFilter {
 
 		log.info("authentication is successful");
 
-		CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+		MyUserDetails userDetails = (MyUserDetails) authentication.getPrincipal();
 
         String username = userDetails.getUsername();
 

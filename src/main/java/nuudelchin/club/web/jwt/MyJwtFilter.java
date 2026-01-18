@@ -5,7 +5,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import nuudelchin.club.web.dto.CustomUserDetails;
+import nuudelchin.club.web.dto.MyUserDetails;
 import nuudelchin.club.web.entity.UserEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -67,7 +67,7 @@ public class MyJwtFilter extends OncePerRequestFilter {
         userEntity.setPassword("temppassword");
         userEntity.setRole(role);
 
-        CustomUserDetails userDetails = new CustomUserDetails(userEntity);
+        MyUserDetails userDetails = new MyUserDetails(userEntity);
 
         Authentication authToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
 
